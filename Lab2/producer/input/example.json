@@ -1,0 +1,8 @@
+{
+  "table": "users",
+  "schema": ["id", "name", "age"],
+  "rows": [
+    {"id": 1, "name": "Alice", "age": 30},
+    {"id": 2, "name": "Bob", "age": 25}
+  ]
+}

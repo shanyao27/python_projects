@@ -1,0 +1,24 @@
+docker-compose down -v
+docker-compose up -d
+docker ps
+nc -vz localhost 9092
+
+docker exec -it etl_json_project-kafka-1 \
+  kafka-topics --bootstrap-server localhost:9092 --list
+
+docker exec -it etl_json_project-kafka-1 \
+   kafka-topics --bootstrap-server localhost:9092 \
+   --create --topic json_topic --partitions 1 --replication-factor 1
+
+python3 gui.py
+
+PYTHONPATH=. python3 -m loader.loader \
+  --bootstrap localhost:9092 \
+  --group etl_loader_group_1 \
+  --topics users \
+  --pg postgresql://etl_user:etl_pass@localhost:5432/etl_db
+
+docker exec -it etl_json_project-postgres-1 psql -U etl_user -d etl_db
+\dt
+
+SELECT * FROM users;
